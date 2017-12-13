@@ -40,6 +40,8 @@
 </head>
 
 <body>
+
+    
     <h1>Google Maps and Places APIs</h1>
     
     <div id = "searchPrompt">
@@ -102,7 +104,7 @@
             console.log("searchLocation: " + searchLocation);
             
             //Set the paramters to find businesses near the searchLocation; 
-            var request = {location: searchLocation, radius:'5000', type: "cafe"};
+            var request = {location: searchLocation, radius:'5000', keyword: "wifi",};
 
             //Save PlacesServices object as a variable; make request for nearby businesses; default returns 20 results
             var service = new google.maps.places.PlacesService(resultsMap);
