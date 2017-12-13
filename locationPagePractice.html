@@ -61,6 +61,8 @@
 //GLOBAL Variables
     var map;
     var userAddress;
+    var infoWindow;
+    var marker;
     
         
 //When the page loads, run the following to generate a map focused on Valencia
@@ -86,11 +88,11 @@
     
     };
 
-    //Called when user submite an address
+    //Called when user submits an address
     function geocodeAddress(geocoder, resultsMap){
         console.log("geocodeAddress function!")
 
-        //Sends a geocode request to convert userAddress into longiture and latitude
+        //Sends a geocode request to convert userAddress into longitude and latitude
         geocoder.geocode({'address':userAddress}, function(results, status) {
             if (status === 'OK') {
 
@@ -100,46 +102,55 @@
             console.log("searchLocation: " + searchLocation);
             
             //Set the paramters to find businesses near the searchLocation; 
-            var request = {location: searchLocation, radius:'5000'};
+            var request = {location: searchLocation, radius:'5000', type: "cafe"};
 
             //Save PlacesServices object as a variable; make request for nearby businesses; default returns 20 results
             var service = new google.maps.places.PlacesService(resultsMap);
             service.nearbySearch(request, callback); //Will run the callback function then return here to finish the function
                
             resultsMap.setCenter(searchLocation) //Set the center of the map to the be the location of the first geocode result
-             
-            
+
             };
 
-            });
+        });
             //Add else (meaning it's not a valid address and determine what to do)
-
-
     };
 
     function callback(results, status) {
         console.log("Nearby search call function!");
-        
-    
-
+           
         if (status === google.maps.places.PlacesServiceStatus.OK) { //If a the request for nearby places is successful 
             console.log("Results inside the callback: ");
             console.log(results);
 
-                for (var i=0; i < results.length; i++) { //For each of the nearby locations, call the createMarker function
-                    createMarker(results[i]);
-                }
-            }
-        };
+            results.forEach(function(element, index, array){
+                var locationName = `<strong><a class='placeName' href='#'>${element.name}</a><strong>`
+                var infowindow = new google.maps.InfoWindow({
+                    content: locationName});
 
-        function createMarker(place){
-            console.log("Create a marker for each place");
-            var placeLoc = place.geometry.location;
-            var marker = new google.maps.Marker({
-                map: map,
-                position: place.geometry.location
+                var placeLoc = element.geometry.location;
+                
+                var marker = new google.maps.Marker({
+                    map: map,
+                    position: element.geometry.location
+                });
+
+                marker.addListener('click', function() {
+                    infowindow.open(map, marker);
+                
+                });
+                
+                $(".placeName").on("click", function(){
+                    
+
+                })
+                
+                
             })
         }
+    }
+          
+
     
 //Things to figure out/add:
         //How to do autocomplete in the search
